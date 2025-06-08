@@ -104,29 +104,35 @@ const CreatePostModal: React.FC<CreatePostModalPropsType> = ({
   };
 
   const handleSubmit = async () => {
+    console.log('[CreatePostModal] handleSubmit started.');
     if (!canSubmit) {
       setError(banMessage || "You are currently restricted from posting.");
+      console.log('[CreatePostModal] handleSubmit blocked: User cannot submit (banned).');
       return;
     }
-    if (!text.trim()) { setError("Banter can't be empty. Share something!"); return; }
-    if (text.length > MAX_POST_LENGTH) { setError(`Banter too long! Under ${MAX_POST_LENGTH} chars (current: ${text.length}).`); return; }
+    if (!text.trim()) { setError("Banter can't be empty. Share something!"); console.log('[CreatePostModal] handleSubmit blocked: Text is empty.'); return; }
+    if (text.length > MAX_POST_LENGTH) { setError(`Banter too long! Under ${MAX_POST_LENGTH} chars (current: ${text.length}).`); console.log('[CreatePostModal] handleSubmit blocked: Text too long.'); return; }
     let finalCustomTitle = customTitleText.trim() || generateUntitledWittyTitle();
-    if (finalCustomTitle.length > MAX_CUSTOM_TITLE_LENGTH) { setError(`Title too long! Under ${MAX_CUSTOM_TITLE_LENGTH} chars (current: ${finalCustomTitle.length}).`); return; }
-    if (tagsInput.length > MAX_TAGS_LENGTH) { setError(`Tags string too long! Under ${MAX_TAGS_LENGTH} characters.`); return; }
-    if (imageUrl.trim() && imageUrl.length > MAX_IMAGE_URL_LENGTH) { setError(`Image URL too long! Under ${MAX_IMAGE_URL_LENGTH} chars.`); return; }
-    if (imageUrl.trim() && !imageUrl.trim().match(/^https?:\/\/.+/)) { setError(`Please enter a valid image URL (starting with http/https).`); return; }
+    if (finalCustomTitle.length > MAX_CUSTOM_TITLE_LENGTH) { setError(`Title too long! Under ${MAX_CUSTOM_TITLE_LENGTH} chars (current: ${finalCustomTitle.length}).`); console.log('[CreatePostModal] handleSubmit blocked: Title too long.'); return; }
+    if (tagsInput.length > MAX_TAGS_LENGTH) { setError(`Tags string too long! Under ${MAX_TAGS_LENGTH} characters.`); console.log('[CreatePostModal] handleSubmit blocked: Tags too long.'); return; }
+    if (imageUrl.trim() && imageUrl.length > MAX_IMAGE_URL_LENGTH) { setError(`Image URL too long! Under ${MAX_IMAGE_URL_LENGTH} chars.`); console.log('[CreatePostModal] handleSubmit blocked: Image URL too long.'); return; }
+    if (imageUrl.trim() && !imageUrl.trim().match(/^https?:\/\/.+/)) { setError(`Please enter a valid image URL (starting with http/https).`); console.log('[CreatePostModal] handleSubmit blocked: Invalid image URL.'); return; }
 
     const parsedTags = tagsInput.split(',').map(tag => tag.trim().toLowerCase().replace(/\s+/g, '-')).filter(tag => tag.length > 0 && tag.length <= 20).slice(0, 5);
     setError(null);
     setIsSubmitting(true);
+    console.log('[CreatePostModal] handleSubmit: Calling onSubmit prop.');
     try {
-      // Pass selectedPostFlairId to the onSubmit handler
       await onSubmit(text, parsedTags, suggestedWittyName, finalCustomTitle, imageUrl.trim() || undefined, selectedPostFlairId); 
+      console.log('[CreatePostModal] handleSubmit: onSubmit prop resolved successfully.');
       onClose(); 
+      console.log('[CreatePostModal] handleSubmit: onClose called.');
     } catch (err) {
+      console.error('[CreatePostModal] handleSubmit: onSubmit prop threw an error:', err);
       setError(err instanceof Error ? err.message : "Failed to post. Please try again.");
     } finally {
       setIsSubmitting(false);
+      console.log('[CreatePostModal] handleSubmit: finally block executed, isSubmitting set to false.');
     }
   };
 
@@ -247,3 +253,4 @@ const CreatePostModal: React.FC<CreatePostModalPropsType> = ({
 };
 
 export default CreatePostModal;
+    
