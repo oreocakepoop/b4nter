@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="lemonade">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Banter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.1/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&family=Lobster&family=Pacifico&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script>
+      tailwind.config = {
+        content: [
+          "./index.html",
+          "./*.{js,ts,jsx,tsx}",
+          "./components/**/*.{js,ts,jsx,tsx}",
+          "./pages/**/*.{js,ts,jsx,tsx}",
+          "./components/skeletons/**/*.{js,ts,jsx,tsx}",
+        ],
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Roboto', 'sans-serif'],
+              lobster: ['Lobster', 'cursive'],
+              pacifico: ['Pacifico', 'cursive'],
+              'press-start': ['"Press Start 2P"', 'cursive'],
+            },
+            colors: {
+              'auth-primary': '#6C2B69',
+              'auth-secondary': '#8A3E88',
+              'auth-bg-left': '#FDF0E7',
+            },
+            animation: {
+              'gradient-x': 'gradientX 15s ease infinite',
+              'gradient-y': 'gradientY 15s ease infinite',
+              'gradient-xy': 'gradientXY 10s ease infinite alternate', // Made distinct
+              'pulse-bg': 'pulseBg 2s infinite ease-in-out',
+              'shimmer': 'shimmer 2s infinite linear',
+              'orbit': 'orbit 6s linear infinite', // Added orbit animation
+            },
+            keyframes: {
+              gradientX: {
+                '0%, 100%': { 'background-position': '0% 50%' },
+                '50%': { 'background-position': '100% 50%' },
+              },
+              gradientY: {
+                '0%, 100%': { 'background-position': '50% 0%' },
+                '50%': { 'background-position': '50% 100%' },
+              },
+              gradientXY: { // Different timing/direction for variety
+                '0%, 100%': { 'background-position': 'left center' },
+                '50%': { 'background-position': 'right center' },
+              },
+              pulseBg: {
+                '0%, 100%': { opacity: 1 },
+                '50%': { opacity: 0.7 },
+              },
+              shimmer: {
+                '0%': { backgroundPosition: '-1000px 0' },
+                '100%': { backgroundPosition: '1000px 0' },
+              },
+              orbit: { // Basic orbit animation
+                '0%': { transform: 'rotate(0deg) translateX(10px) rotate(0deg)' }, // Adjust translateX for orbit radius
+                '100%': { transform: 'rotate(360deg) translateX(10px) rotate(-360deg)' }
+              }
+            }
+          },
+        },
+        plugins: [
+          function({ addUtilities, theme, e }) {
+            const textShadowUtilities = {
+              '.text-shadow-sm': { textShadow: '1px 1px 2px var(--tw-shadow-color)' },
+              '.text-shadow': { textShadow: '2px 2px 4px var(--tw-shadow-color)' },
+              '.text-shadow-lg': { textShadow: '3px 3px 6px var(--tw-shadow-color)' },
+            };
+            addUtilities(textShadowUtilities, ['responsive', 'hover']);
+          }
+        ],
+        daisyui: {
+          themes: true
+        },
+      }
+    </script>
+    <style id="global-styles">
+      html {
+        font-size: 16px;
+        min-height: 100vh; /* Changed from height: 100% */
+      }
+      body {
+        font-family: 'Roboto', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        background-color: hsl(var(--b2));
+        color: hsl(var(--bc));
+        min-height: 100vh; /* Changed from min-height: 100% */
+        display: flex;
+        flex-direction: column;
+      }
+      #root {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        --navbar-height: 4rem; /* Default navbar height, can be overridden by JS if needed */
+      }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
+      }
+      .text-shadow-sm { --tw-shadow-color: hsl(var(--bc) / 0.15); }
+      .text-shadow { --tw-shadow-color: hsl(var(--bc) / 0.25); }
+      .text-shadow-lg { --tw-shadow-color: hsl(var(--bc) / 0.35); }
+
+      @keyframes animatedGradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+
+      .animated-gradient-bg {
+        background: linear-gradient(135deg, hsl(var(--p)/0.95), hsl(var(--s)/0.85), hsl(var(--a)/0.95), hsl(var(--er)/0.85));
+        background-size: 350% 350%;
+        animation: animatedGradient 15s ease infinite;
+      }
+
+
+      html[data-theme] {
+        --rounded-box: 0.5rem;
+        --rounded-btn: 0.25rem;
+        --rounded-badge: 9999px;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: hsl(var(--b2)/0.5);
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: hsl(var(--bc)/0.3);
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: hsl(var(--bc)/0.5);
+      }
+
+      .skeleton-shimmer {
+        position: relative;
+        overflow: hidden;
+        background-color: hsl(var(--b1)/0.8); /* Base color for skeleton */
+      }
+      .skeleton-shimmer::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 200%;
+        height: 100%;
+        background: linear-gradient(to right, transparent 20%, hsl(var(--b1)/0.5) 50%, transparent 80%);
+        animation: shimmer 1.8s infinite linear;
+      }
+
+      /* For animate-orbit, applied on the flair element wrapper */
+      .animate-orbit {
+        /* The element itself will be small, its parent in ProfilePhoto.tsx needs to have an appropriate size for the orbit path */
+        /* This example assumes the flair element is centered by its parent then animated */
+      }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.1.0",
+    "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "react-router-dom": "https://esm.sh/react-router-dom@^7.6.2",
+    "framer-motion": "https://esm.sh/framer-motion@^12.16.0",
+    "firebase/": "https://esm.sh/firebase@^11.9.0/",
+    "@firebase/util": "https://esm.sh/@firebase/util@^1.12.0",
+    "date-fns": "https://esm.sh/date-fns@^4.1.0",
+    "date-fns/": "https://esm.sh/date-fns@^4.1.0/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.4.0",
+    "@heroicons/react/": "https://esm.sh/@heroicons/react@^2.2.0/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+</body>
+</html>
